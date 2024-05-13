@@ -1,5 +1,15 @@
 #!/usr/bin/env python
 
+# this script uses a keyword like "(Disc", (from something like "(Disc 1)" in the filename), to determine if a game is multi-disc.
+DISC_KEYWORD = "(Disc"
+
+# whether or not to skip generating m3u's for single-disc games
+SKIP_SINGLEDISC = True
+
+#############
+# -----------
+#############
+
 import os
 import sys
 
@@ -36,7 +46,15 @@ for filename in dirlist:
         continue
 
     if file_ext in ['chd', 'bin', 'cue', 'iso']:
-        gamename = filename_noext.split('(Disc')[0]
+        gamename_split = filename_noext.split(DISC_KEYWORD)
+        if len(gamename_split) == 1:
+            # skip roms that don't have multiple discs, if preferred
+            if SKIP_SINGLEDISC:
+                continue
+
+            pass
+
+        gamename = gamename_split[0]
 
         if gamename not in mapping.keys():
             mapping[gamename] = []
@@ -47,8 +65,12 @@ for filename in dirlist:
 for gamename in mapping:
     with open(gamename + '.m3u', 'w') as fh:
         fh.write("\n".join(mapping[gamename]))
+        pass
 
     print("generated m3u for " + gamename)
 
-print()
-print("done!")
+if mapping:
+    print()
+    print("done!")
+else:
+    print("no m3u's generated for folder " + target_path)
