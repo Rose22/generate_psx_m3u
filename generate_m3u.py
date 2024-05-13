@@ -65,7 +65,6 @@ for filename in dirlist:
 for gamename in mapping:
     with open(gamename + '.m3u', 'w') as fh:
         fh.write("\n".join(mapping[gamename]))
-        pass
 
     print("generated m3u for " + gamename)
 
