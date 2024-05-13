@@ -6,6 +6,9 @@ DISC_KEYWORD = "(Disc"
 # whether or not to skip generating m3u's for single-disc games
 SKIP_SINGLEDISC = True
 
+# for minUI users, this'll create a folder per multi-disc game and put all the game files into it
+CREATE_FOLDERS = False
+
 #############
 # -----------
 #############
@@ -40,6 +43,11 @@ dirlist.sort() # make sure it's all in the right order
 # }
 mapping = {}
 for filename in dirlist:
+    filename_split = filename.split('.')
+
+    if len(filename_split) == 1: continue
+    if os.path.isdir(filename): continue
+
     filename_noext, file_ext = filename.split('.')[0], filename.split('.')[1]
 
     if file_ext == 'm3u':
@@ -54,7 +62,7 @@ for filename in dirlist:
 
             pass
 
-        gamename = gamename_split[0]
+        gamename = gamename_split[0].strip()
 
         if gamename not in mapping.keys():
             mapping[gamename] = []
@@ -62,9 +70,20 @@ for filename in dirlist:
         mapping[gamename].append(filename)
 
 # then use that mapping to generate the m3u's
-for gamename in mapping:
-    with open(gamename + '.m3u', 'w') as fh:
-        fh.write("\n".join(mapping[gamename]))
+for gamename, files in mapping.items():
+    m3u_path = gamename+'.m3u'
+
+    if CREATE_FOLDERS:
+        if not os.path.isdir(gamename):
+            os.mkdir(gamename)
+
+        for filename in files:
+            os.rename(filename, gamename+'/'+filename)
+
+        m3u_path = gamename+'/'+m3u_path
+
+    with open(m3u_path, 'w') as fh:
+        fh.write("\n".join(files))
 
     print("generated m3u for " + gamename)
 
