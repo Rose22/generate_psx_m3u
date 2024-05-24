@@ -88,24 +88,23 @@ for filename in dirlist:
 for gamename, files in mapping.items():
     m3u_path = gamename+'.m3u'
 
-    if SETTINGS['mode'] in ("gamefolders", "subfolder"):
-        match SETTINGS['mode']:
-            case "gamefolders":
-                target_folder = gamename
-            case "subfolder":
-                target_folder = SETTINGS['subfolder_name']
+    match SETTINGS['mode']:
+        case "gamefolders" | "subfolder":
+            match SETTINGS['mode']:
+                case "gamefolders":
+                    target_folder = gamename
+                    m3u_path = target_folder+'/'+m3u_path
+                case "subfolder":
+                    target_folder = SETTINGS['subfolder_name']
 
-        if not os.path.isdir(target_folder):
-            os.mkdir(target_folder)
+            if not os.path.isdir(target_folder):
+                os.mkdir(target_folder)
 
-        for filename in files:
-            os.rename(filename, target_folder+'/'+filename)
+            for filename in files:
+                os.rename(filename, target_folder+'/'+filename)
 
-        if SETTINGS['mode'] == "gamefolders":
-            m3u_path = target_folder+'/'+m3u_path
-
+    # modify the m3u so that it points to the subfolder
     if SETTINGS['mode'] == "subfolder":
-        # modify the m3u so that it points to the hidden folder
         for i in range(0, len(files)):
             files[i] = target_folder+'/'+files[i]
 
