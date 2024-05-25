@@ -120,12 +120,11 @@ for gamename, files in mapping.items():
         # skip the .bin files of a .bin .cue pair when writing the m3u's'
         if filename.rsplit('.')[1] in ('bin'): continue
 
-        files_m3u.append(filename)
+        # modify the m3u so that it points to the subfolder
+        if CONF['mode'] == "subfolder":
+            filename = f"{target_folder}/{filename}"
 
-    # modify the m3u so that it points to the subfolder
-    if CONF['mode'] == "subfolder":
-        for i in range(0, len(files_m3u)):
-            files_m3u[i] = f"{target_folder}/{files_m3u[i]}"
+        files_m3u.append(filename)
 
     with open(m3u_path, 'w') as fh:
         fh.write("\n".join(files_m3u))
