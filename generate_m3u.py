@@ -28,13 +28,11 @@ import os
 import sys
 import configparser
 
+# i don't like the [config] heading, so i'll just add it afterwards XD
 config = f"[config]\n{config}"
 
 confparse = configparser.ConfigParser()
 confparse.read_string(config)
-if 'config' not in confparse.keys():
-    print("ERROR: please ensure the config section is named 'config'.")
-    sys.exit(1)
 CONF = confparse['config']
 
 # the usual input checking
@@ -118,7 +116,7 @@ for gamename, files in mapping.items():
 
     files_m3u = []
     for filename in files:
-        # skip the .bin files of a .bin .cue pair when writing the m3u's'
+        # skip the .bin files of a .bin .cue pair when writing the m3u's
         if filename.rsplit('.')[1].lower() in ('bin'): continue
 
         # modify the m3u so that it points to the subfolder
