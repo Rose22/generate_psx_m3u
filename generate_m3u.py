@@ -77,10 +77,10 @@ for filename in dirlist:
     if len(filename_split) <= 1: continue
     filename_noext, file_ext = filename_split
 
-    if file_ext == 'm3u':
+    if file_ext.lower() == 'm3u':
         continue
 
-    if file_ext in ('chd', 'bin', 'cue', 'iso'):
+    if file_ext.lower() in ('chd', 'bin', 'cue', 'iso'):
         gamename_split = filename_noext.rsplit(CONF['disc_keyword'], 1)
         if len(gamename_split) <= 1:
             # skip roms that don't have multiple discs, if preferred
@@ -112,13 +112,14 @@ for gamename, files in mapping.items():
             if not os.path.isdir(target_folder):
                 os.mkdir(target_folder)
 
+            # actually move the files
             for filename in files:
                 os.rename(filename, f"{target_folder}/{filename}")
 
     files_m3u = []
     for filename in files:
         # skip the .bin files of a .bin .cue pair when writing the m3u's'
-        if filename.rsplit('.')[1] in ('bin'): continue
+        if filename.rsplit('.')[1].lower() in ('bin'): continue
 
         # modify the m3u so that it points to the subfolder
         if CONF['mode'] == "subfolder":
