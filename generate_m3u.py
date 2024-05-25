@@ -80,7 +80,7 @@ for filename in dirlist:
     if file_ext == 'm3u':
         continue
 
-    if file_ext in ('chd', 'cue', 'iso'):
+    if file_ext in ('chd', 'bin', 'cue', 'iso'):
         gamename_split = filename_noext.rsplit(CONF['disc_keyword'], 1)
         if len(gamename_split) <= 1:
             # skip roms that don't have multiple discs, if preferred
@@ -115,13 +115,20 @@ for gamename, files in mapping.items():
             for filename in files:
                 os.rename(filename, f"{target_folder}/{filename}")
 
+    files_m3u = []
+    for filename in files:
+        # skip the .bin files of a .bin .cue pair when writing the m3u's'
+        if filename.rsplit('.')[1] in ('bin'): continue
+
+        files_m3u.append(filename)
+
     # modify the m3u so that it points to the subfolder
     if CONF['mode'] == "subfolder":
-        for i in range(0, len(files)):
-            files[i] = f"{target_folder}/{files[i]}"
+        for i in range(0, len(files_m3u)):
+            files_m3u[i] = f"{target_folder}/{files_m3u[i]}"
 
     with open(m3u_path, 'w') as fh:
-        fh.write("\n".join(files))
+        fh.write("\n".join(files_m3u))
 
     print(f"generated m3u for {gamename}")
 
