@@ -75,7 +75,7 @@ for filename in dirlist:
 
     filename_split = filename.rsplit('.', 1)
     if len(filename_split) <= 1: continue
-    filename_noext, file_ext = filename.rsplit('.', 1)
+    filename_noext, file_ext = filename_split
 
     if file_ext == 'm3u':
         continue
