@@ -80,7 +80,7 @@ for filename in dirlist:
     if file_ext == 'm3u':
         continue
 
-    if file_ext in ('chd', 'bin', 'cue', 'iso'):
+    if file_ext in ('chd', 'cue', 'iso'):
         gamename_split = filename_noext.rsplit(CONF['disc_keyword'], 1)
         if len(gamename_split) <= 1:
             # skip roms that don't have multiple discs, if preferred
